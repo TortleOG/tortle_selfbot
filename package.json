@@ -1,0 +1,29 @@
+{
+  "name": "tortle_selfbot",
+  "version": "0.0.1",
+  "description": "A Discord selfbot create with a custom command handler",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "npm run test -- --fix",
+    "test": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TortleOG/tortle_selfbot.git"
+  },
+  "author": "Adam Mahood",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TortleOG/tortle_selfbot/issues"
+  },
+  "homepage": "https://github.com/TortleOG/tortle_selfbot#readme",
+  "dependencies": {
+    "discord.js": "github:hydrabolt/discord.js#master"
+  },
+  "devDependencies": {
+    "eslint": "^4.2.0"
+  },
+  "engines": {
+    "node": ">=8.1.0"
+  }
+}
