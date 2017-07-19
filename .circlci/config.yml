@@ -3,11 +3,8 @@ jobs:
   build:
     working_directory: ./tmp
     docker:
-      - image: node:8.0
+      - image: circleci/node:latest
     steps:
       - checkout
-      - run:
-        name: "Checking versions"
-        command: |
-          node -v
-          npm -v
+      - run: node -v
+      - run: npm -v
