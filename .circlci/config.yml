@@ -11,5 +11,3 @@ jobs:
         command: |
           node -v
           npm -v
-      - run: npm install
-      - run: npm test
