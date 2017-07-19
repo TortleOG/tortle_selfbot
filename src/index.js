@@ -1,24 +1,22 @@
 const Discord = require("discord.js");
+const loadCommands = require("./util/loadCommands");
+const loadEvents = require("./util/loadEvents");
 
 const client = new Discord.Client();
 
-client.config = require("../settings.json");
+client.config = require("../settings");
 
-client.on("ready", () => {
-  console.log("Selfbot initalized. Ready to serve.");
-});
-
-client.on("message", (msg) => {
-  if (msg.author.id !== client.user.id) return;
-  else if (!msg.content.startsWith(client.config.prefix)) return;
-
-  if (msg.content.startsWith(`${client.config.prefix}ping`)) {
-    msg.delete();
-    return msg.channel.send("Ping!").then(m => m.edit(`Pong! Client Latency: **${m.createdTimestamp - msg.createdTimestamp}ms**. API Latency: **${Math.round(client.ping)}ms**`));
-  }
-});
+client.commands = new Discord.Collection();
+client.aliases = new Discord.Collection();
 
 client.login(client.config.token);
+
+const init = async () => {
+  await loadCommands(client);
+  await loadEvents(client);
+};
+
+init();
 
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception: ", err);
