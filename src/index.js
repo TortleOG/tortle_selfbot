@@ -21,8 +21,7 @@ client.on("message", (msg) => {
 client.login(client.config.token);
 
 process.on("uncaughtException", (err) => {
-  const errorMsg = err.stack.replace(new RegExp(`${__dirname}\/`, "g"), "./");
-  console.error("Uncaught Exception: ", errorMsg);
+  console.error("Uncaught Exception: ", err);
 });
 
 process.on("unhandledRejection", (err) => {
