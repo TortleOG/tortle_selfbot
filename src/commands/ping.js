@@ -13,4 +13,5 @@ exports.help = {
   name: "ping",
   description: "A Ping/Pong command to test latency.",
   usage: "",
+  usageDelim: "",
 };
