@@ -6,5 +6,5 @@ module.exports = async (client, msg) => {
   const command = args.shift().slice(client.config.prefix.length).toLowerCase();
 
   const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
-  if (cmd) return cmd.run(client, msg, args);
+  if (cmd && cmd.conf.enabled) return cmd.run(client, msg, args);
 };

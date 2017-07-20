@@ -19,6 +19,8 @@ module.exports = async (client) => {
       props.conf.aliases.forEach((alias) => {
         client.alias.set(alias, props.help.name);
       });
+
+      if (props.init) props.init(client);
     } catch (err) {
       console.log(`Error occured when loading command ${cmd} => ${err}`);
     }
