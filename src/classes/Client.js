@@ -1,5 +1,4 @@
 const { promisify } = require("util");
-const chalk = require("chalk");
 const readdir = promisify(require("fs").readdir);
 const mkdir = promisify(require("fs").mkdir);
 
@@ -8,7 +7,7 @@ module.exports = class Client {
     const cmds = await readdir("./commands/").catch(async () => {
       await mkdir("./commands").catch(e => console.log(`Error when creating 'commands' dir => ${e}`));
     });
-    console.log(`${chalk.bgBlue(`[${new Date().toLocaleTimeString("en-US", { hour12: true })}]`)} Loading a total of ${cmds.length} commands.`);
+    client.funcs.log(`Loading a total of ${cmds.length} commands.`);
     cmds.forEach((cmd) => {
       try {
         const props = require(`../commands/${cmd}`);
@@ -32,7 +31,7 @@ module.exports = class Client {
     const events = await readdir("./events/").catch(async () => {
       await mkdir("./events").catch(e => console.log(`Error when creating 'events' dir => ${e}`));
     });
-    console.log(`${chalk.bgBlue(`[${new Date().toLocaleTimeString("en-US", { hour12: true })}]`)} Loading a total of ${events.length} events.`);
+    client.funcs.log(`Loading a total of ${events.length} events.`);
     events.forEach((file) => {
       try {
         const eventName = file.split(".")[0];
@@ -43,5 +42,10 @@ module.exports = class Client {
         console.error(err);
       }
     });
+  }
+
+  static log(data) {
+    const { bgBlue } = require("chalk");
+    console.log(`${bgBlue(`[${new Date().toLocaleTimeString("en-US", { hour12: true })}]`)} ${data}`);
   }
 };
