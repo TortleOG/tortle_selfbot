@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
-const loadCommands = require("./util/loadCommands");
-const loadEvents = require("./util/loadEvents");
+const { loadCommands, loadEvents } = require("./classes/Client");
 
 const client = new Discord.Client();
 
@@ -12,6 +11,7 @@ client.aliases = new Discord.Collection();
 client.login(client.config.token);
 
 const init = async () => {
+  client.startTime = new Date();
   await loadCommands(client);
   await loadEvents(client);
 };
