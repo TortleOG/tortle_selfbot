@@ -1,4 +1,4 @@
-const { parseUsage, validateArgs, parseArgs } = require("../classes/Util");
+const { validateUsage, parseUsage, validateArgs, parseArgs } = require("../classes/Util");
 
 module.exports = async (client, msg) => {
   if (msg.author.id !== client.user.id) return;
@@ -11,8 +11,9 @@ module.exports = async (client, msg) => {
 
   try {
     // CMD Usage parsing and validation
+    await validateUsage(cmd, cmd.help.usage);
     const usage = parseUsage(cmd.help.usage);
-    if (usage === null) return cmd.run(client, msg);
+    if (usage === null && cmd.conf.enabled) return cmd.run(client, msg);
 
     // If only one argument, pass all args as one array
     args = usage.args.length === 1 ? [args.join(" ")] : args;
@@ -24,6 +25,9 @@ module.exports = async (client, msg) => {
     // If cmd exists and is enabled run the command
     if (cmd && cmd.conf.enabled) return cmd.run(client, msg, params);
   } catch (err) {
+    if (err === `Invalid usage statement at cmd: ${cmd.help.name}`) return msg.channel.send(`\`\`\`js\n${err}\`\`\``);
+    else if (err.startsWith("Missing required argument")) return msg.channel.send(`\`\`\`js\n${err}\`\`\``);
+    else if (err.search("argument") !== -1) return msg.channel.send(`\`\`\`js\n${err}\`\`\``);
     return msg.channel.send(`\`\`\`js\n${err.stack}\`\`\``);
   }
 };

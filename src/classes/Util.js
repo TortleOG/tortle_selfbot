@@ -1,7 +1,19 @@
 module.exports = class Util {
-  // static validateUsage() {
+  static async validateUsage(cmd, usage) {
+    if (usage === "" || !usage) return true;
+    usage = usage.split(" ");
 
-  // }
+    return usage.forEach((arg) => {
+      if (arg[0] === "<") {
+        if (arg[arg.length - 1] === ">") return true;
+        throw `Invalid usage statment at cmd: ${cmd.help.name}`;
+      } else if (arg[0] === "[") {
+        if (arg[arg.length - 1] === "]") return true;
+        throw `Invalid usage statement at cmd: ${cmd.help.name}`;
+      }
+      throw `Invalid usage statement at cmd: ${cmd.help.name}`;
+    });
+  }
 
   static parseUsage(usage) {
     if (usage === "" || !usage) return null;
@@ -21,7 +33,7 @@ module.exports = class Util {
 
   static async validateArgs(parsed, args) {
     for (let i = 0; i < parsed.args.length; i++) {
-      if (parsed.args[i].required && (args[i] === "" || args[i] === undefined)) throw `missing required argument ${parsed.args[i].name}`;
+      if (parsed.args[i].required && (args[i] === "" || args[i] === undefined)) throw `Missing required argument ${parsed.args[i].name}`;
       try {
         if (parsed.args[i].type === "str") Util.validateStr(args[i]);
         else if (parsed.args[i].type === "int") Util.validateInt(args[i]);
