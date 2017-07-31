@@ -19,7 +19,8 @@
   "homepage": "https://github.com/TortleOG/tortle_selfbot#readme",
   "dependencies": {
     "chalk": "^2.0.1",
-    "discord.js": "github:hydrabolt/discord.js#master"
+    "discord.js": "github:hydrabolt/discord.js#master",
+    "performance-now": "^2.1.0"
   },
   "devDependencies": {
     "eslint": "^4.2.0",

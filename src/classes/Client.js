@@ -1,13 +1,14 @@
 const { promisify } = require("util");
 const readdir = promisify(require("fs").readdir);
 const mkdir = promisify(require("fs").mkdir);
+const log = require("../events/log");
 
 module.exports = class Client {
   static async loadCommands(client) {
     const cmds = await readdir("./commands/").catch(async () => {
-      await mkdir("./commands").catch(e => console.log(`Error when creating 'commands' dir => ${e}`));
+      await mkdir("./commands").catch(e => log(null, `Error when creating 'commands' dir => ${e}`, "error"));
     });
-    client.funcs.log(`Loading a total of ${cmds.length} commands.`);
+    log(null, `Loading a total of ${cmds.length} commands.`);
     cmds.forEach((cmd) => {
       try {
         const props = require(`../commands/${cmd}`);
@@ -17,21 +18,21 @@ module.exports = class Client {
 
         if (!props.conf.aliases) props.conf.aliases = [];
         props.conf.aliases.forEach((alias) => {
-          client.alias.set(alias, props.help.name);
+          client.aliases.set(alias, props.help.name);
         });
 
         if (props.init) props.init(client);
       } catch (err) {
-        console.error(`Error occured when loading command ${cmd} => ${err}`);
+        log(null, `Error occured when loading command ${cmd} => ${err.stack}`, "error");
       }
     });
   }
 
   static async loadEvents(client) {
     const events = await readdir("./events/").catch(async () => {
-      await mkdir("./events").catch(e => console.log(`Error when creating 'events' dir => ${e}`));
+      await mkdir("./events").catch(e => log(null, `Error when creating 'events' dir => ${e}`, "error"));
     });
-    client.funcs.log(`Loading a total of ${events.length} events.`);
+    log(null, `Loading a total of ${events.length} events.`);
     events.forEach((file) => {
       try {
         const eventName = file.split(".")[0];
@@ -39,13 +40,9 @@ module.exports = class Client {
         client.on(eventName, event.bind(null, client));
         delete require.cache[require.resolve(`../events/${file}`)];
       } catch (err) {
-        console.error(err);
+        log(null, err, "error");
       }
     });
   }
-
-  static log(data) {
-    const { bgBlue } = require("chalk");
-    console.log(`${bgBlue(`[${new Date().toLocaleTimeString("en-US", { hour12: true })}]`)} ${data}`);
-  }
 };
+

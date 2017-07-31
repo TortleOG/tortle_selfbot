@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
+const now = require("performance-now");
 const { loadCommands, loadEvents } = require("./classes/Client");
-const { log } = require("./classes/Client");
 
 const client = new Discord.Client();
 
@@ -8,15 +8,14 @@ client.config = require("../settings");
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
-client.funcs = {};
-
 client.login(client.config.token);
 
 const init = async () => {
-  client.startTime = new Date();
-  client.funcs.log = log;
+  const start = now();
   await loadCommands(client);
   await loadEvents(client);
+  const end = now();
+  client.initTime = (end - start).toFixed(2);
 };
 
 init();
