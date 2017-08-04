@@ -1,6 +1,7 @@
 const { inspect } = require("util");
 const Discord = require("discord.js");
 
+/* eslint-disable no-eval */
 exports.run = async (client, msg, [input]) => {
   try {
     let evaled = eval(input);
