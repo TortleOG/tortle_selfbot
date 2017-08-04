@@ -27,7 +27,7 @@ module.exports = async (client, msg) => {
       // If cmd exists and is enabled run the command
       return cmd.run(client, msg, params);
     } catch (err) {
-      return msg.channel.send(err.stack ? `\`\`\`js\n${err.stack}\`\`\`` : `\`\`\`js\n${err}\`\`\``);
+      return msg.channel.send(err.stack ? `\`\`\`js\n${err.stack}\`\`\`` : `\`\`\`js\nError: ${err}\`\`\``);
     }
   }
 };
