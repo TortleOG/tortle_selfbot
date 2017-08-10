@@ -1,6 +1,7 @@
 const { promisify } = require("util");
 const readdir = promisify(require("fs").readdir);
 const mkdir = promisify(require("fs").mkdir);
+const ParseUsage = require("./ParseUsage");
 const log = require("../events/log");
 
 module.exports = class Client {
@@ -14,6 +15,7 @@ module.exports = class Client {
         const props = require(`../commands/${cmd}`);
 
         if (cmd.split(".").slice(-1)[0] !== "js") return;
+        props.usage = new ParseUsage(props);
         client.commands.set(props.help.name, props);
 
         if (!props.conf.aliases) props.conf.aliases = [];
