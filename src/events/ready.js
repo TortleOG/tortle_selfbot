@@ -1,3 +1,3 @@
 module.exports = async (client) => {
-  client.emit("log", `Selfbot initalized in ${client.initTime}ms. Ready to serve ${client.guilds.size} guilds.`);
+  client.emit("log", `Selfbot initalized. Ready to serve ${client.guilds.size} guilds.`);
 };
