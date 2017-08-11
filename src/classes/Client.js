@@ -1,50 +1,31 @@
-const { promisify } = require("util");
-const readdir = promisify(require("fs").readdir);
-const mkdir = promisify(require("fs").mkdir);
-const ParseUsage = require("./ParseUsage");
-const log = require("../events/log");
+const Discord = require("discord.js");
+const path = require("path");
+const now = require("performance-now");
+const Loader = require("./Loader");
 
-module.exports = class Client {
-  static async loadCommands(client) {
-    const cmds = await readdir("./commands/").catch(async () => {
-      await mkdir("./commands").catch(e => log(null, `Error when creating 'commands' dir => ${e}`, "error"));
-    });
-    log(null, `Loading a total of ${cmds.length} commands.`);
-    cmds.forEach((cmd) => {
-      try {
-        const props = require(`../commands/${cmd}`);
-
-        if (cmd.split(".").slice(-1)[0] !== "js") return;
-        props.usage = new ParseUsage(props);
-        client.commands.set(props.help.name, props);
-
-        if (!props.conf.aliases) props.conf.aliases = [];
-        props.conf.aliases.forEach((alias) => {
-          client.aliases.set(alias, props.help.name);
-        });
-
-        if (props.init) props.init(client);
-      } catch (err) {
-        log(null, `Error occured when loading command ${cmd} => ${err.stack}`, "error");
-      }
-    });
+class Client extends Discord.Client {
+  constructor(config = {}) {
+    if (typeof config !== "object") throw new TypeError("Client configuration must be an object.");
+    super(config.clientOptions);
+    this.config = config;
+    if (!("prefix" in config)) this.config.prefix = "/";
+    this.coreBaseDir = path.join(__dirname, "../");
+    this.funcs = new Loader(this);
+    this.commands = new Discord.Collection();
+    this.aliases = new Discord.Collection();
+    this.eventHandlers = new Discord.Collection();
+    this.methods = {
+      Collection: Discord.Collection,
+      Embed: Discord.MessageEmbed,
+    };
+    // this.once("ready", this._ready.bind(this));
   }
-
-  static async loadEvents(client) {
-    const events = await readdir("./events/").catch(async () => {
-      await mkdir("./events").catch(e => log(null, `Error when creating 'events' dir => ${e}`, "error"));
-    });
-    log(null, `Loading a total of ${events.length} events.`);
-    events.forEach((file) => {
-      try {
-        const eventName = file.split(".")[0];
-        const event = require(`../events/${file}`);
-        client.on(eventName, event.bind(null, client));
-        delete require.cache[require.resolve(`../events/${file}`)];
-      } catch (err) {
-        log(null, err, "error");
-      }
-    });
+  async login(token) {
+    const start = now();
+    await this.funcs.loadAll();
+    this.emit("log", `Loaded in ${(now() - start).toFixed(2)}ms.`);
+    super.login(token);
   }
-};
+}
 
+module.exports = Client;

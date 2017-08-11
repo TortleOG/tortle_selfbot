@@ -1,6 +1,6 @@
-const { validateUsage, parseUsage, validateArgs, parseArgs } = require("../classes/Util");
+// const { validateUsage, parseUsage, validateArgs, parseArgs } = require("../classes/Util");
 
-module.exports = async (client, msg) => {
+exports.run = async (client, msg) => {
   if (msg.author.id !== client.user.id) return;
   else if (msg.content.indexOf(client.config.prefix) !== 0) return;
 
@@ -9,7 +9,7 @@ module.exports = async (client, msg) => {
 
   if (cmd && cmd.conf.enabled) {
     console.log(cmd.help.usage);
-    const args = !cmd.help.usageDelim || cmd.help.usageDelim === "" ? msg.content.split(/\s+/g).slice(1) : msg.content.split(/\s+/g).slice(1).join(" ").split(cmd.help.usageDelim);
+    // const args = !cmd.help.usageDelim || cmd.help.usageDelim === "" ? msg.content.split(/\s+/g).slice(1) : msg.content.split(/\s+/g).slice(1).join(" ").split(cmd.help.usageDelim);
     try {
       // No usage, run command
       if (cmd.help.usage === "") return cmd.run(client, msg);

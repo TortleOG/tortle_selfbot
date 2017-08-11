@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 
 class ParseUsage {
-  constructor(command) {
-    // Object.defineProperty(this, "client", { value: client });
+  constructor(client, command) {
+    Object.defineProperty(this, "client", { value: client });
     this.names = [command.help.name, ...command.conf.aliases];
     this.commands = this.names.length === 1 ? this.names[0] : `(${this.names.join("|")})`;
     this.deliminatedUsage = command.help.usage !== "" ? `${command.help.usage.split(" ").join(command.help.usageDelim)}` : "";

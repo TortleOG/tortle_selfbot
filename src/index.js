@@ -1,24 +1,8 @@
-const Discord = require("discord.js");
-const now = require("performance-now");
-const { loadCommands, loadEvents } = require("./classes/Client");
+const Tortle = require("./classes/Client");
 
-const client = new Discord.Client();
+const client = new Tortle(require("../settings"));
 
-client.config = require("../settings");
-
-client.commands = new Discord.Collection();
-client.aliases = new Discord.Collection();
 client.login(client.config.token);
-
-const init = async () => {
-  const start = now();
-  await loadCommands(client);
-  await loadEvents(client);
-  const end = now();
-  client.initTime = (end - start).toFixed(2);
-};
-
-init();
 
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception: ", err);
