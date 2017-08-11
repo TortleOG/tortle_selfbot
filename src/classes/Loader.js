@@ -16,10 +16,7 @@ class Loader {
     const [[commands, aliases], events] = await Promise.all([
       this.loadCommands(),
       this.loadEvents(),
-    ]).catch((err) => {
-      console.error(err);
-      process.exit();
-    });
+    ]).catch(err => console.error(err));
     this.client.emit("log", [
       `Loaded ${commands} commands with ${aliases} aliases.`,
       `Loaded ${events} events.`,
