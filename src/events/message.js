@@ -1,6 +1,6 @@
 const { validateUsage, parseUsage, validateArgs, parseArgs } = require("../classes/Util");
 
-module.exports = async (client, msg) => {
+exports.run = async (client, msg) => {
   if (msg.author.id !== client.user.id) return;
   else if (msg.content.indexOf(client.config.prefix) !== 0) return;
 
