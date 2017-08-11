@@ -20,6 +20,7 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "discord.js": "github:hydrabolt/discord.js#master",
+    "fs-nextra": "^0.2.0",
     "performance-now": "^2.1.0"
   },
   "devDependencies": {
