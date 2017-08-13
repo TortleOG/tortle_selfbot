@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const path = require("path");
 const now = require("performance-now");
 const Loader = require("./Loader");
+const ArgResolver = require("./ArgResolver");
+const CommandMessage = require("./CommandMessage");
 
 class Client extends Discord.Client {
   constructor(config = {}) {
@@ -10,6 +12,8 @@ class Client extends Discord.Client {
     this.config = config;
     if (!("prefix" in config)) this.config.prefix = "/";
     this.coreBaseDir = path.join(__dirname, "../");
+    this.argResolver = new ArgResolver(this);
+    this.CommandMessage = CommandMessage;
     this.funcs = new Loader(this);
     this.commands = new Discord.Collection();
     this.aliases = new Discord.Collection();

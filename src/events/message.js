@@ -1,34 +1,38 @@
-// const { validateUsage, parseUsage, validateArgs, parseArgs } = require("../classes/Util");
-
 exports.run = async (client, msg) => {
-  if (msg.author.id !== client.user.id) return;
+  if (!client.user.bot && msg.author.id !== client.user.id) return;
   else if (msg.content.indexOf(client.config.prefix) !== 0) return;
+  const res = await this.parseCommand(client, msg);
+  if (!res.command) return;
+  this.handleCommand(client, msg, res);
+};
 
-  const command = msg.content.split(/\s+/g)[0].slice(client.config.prefix.length).toLowerCase();
-  const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
+exports.parseCommand = async (client, msg) => {
+  const prefix = msg.content.slice(msg.content.indexOf(client.config.prefix), client.config.prefix.length);
+  if (!prefix) return false;
+  return {
+    command: msg.content.slice(prefix.length).split(" ")[0].toLowerCase(),
+    prefix,
+    prefixLength: prefix.length,
+  };
+};
 
-  if (cmd && cmd.conf.enabled) {
-    console.log(cmd.help.usage);
-    // const args = !cmd.help.usageDelim || cmd.help.usageDelim === "" ? msg.content.split(/\s+/g).slice(1) : msg.content.split(/\s+/g).slice(1).join(" ").split(cmd.help.usageDelim);
-    try {
-      // No usage, run command
-      if (cmd.help.usage === "") return cmd.run(client, msg);
+exports.handleCommand = (client, msg, { command, prefix, prefixLength }) => {
+  const validCommand = client.commands.get(command) || client.commands.get(client.aliases.get(command));
+  if (!validCommand || !validCommand.conf.enabled) return;
+  const proxy = this.createProxy(msg, new client.CommandMessage(msg, validCommand, prefix, prefixLength));
+  this.runCommand(client, proxy);
+};
 
-      // CMD Usage parsing and validation
-      // await validateUsage(cmd, cmd.help.usage);
-      // const usage = parseUsage(cmd.help.usage);
+exports.createProxy = (msg, cmdMsg) => new Proxy(msg, {
+  get: function handler(target, param) {
+    return param in msg ? msg[param] : cmdMsg[param];
+  },
+});
 
-      // If only one argument, pass all args as one array
-      // args = usage.length === 1 ? [args.join(" ")] : args;
-
-      // Argument validation and parsing
-      // await validateArgs(usage, args);
-      // const params = parseArgs(usage, args);
-
-      // If cmd exists and is enabled run the command
-      return cmd.run(client, msg);
-    } catch (err) {
-      return msg.channel.send(err.stack ? `\`\`\`js\n${err.stack}\`\`\`` : `\`\`\`js\nError: ${err}\`\`\``);
-    }
-  }
+exports.runCommand = (client, msg) => {
+  msg.validateArgs()
+    .then((params) => {
+      msg.cmd.run(client, msg, params).catch(err => msg.channel.send(`\`\`\`${err.stack || err}\`\`\``));
+    })
+    .catch(err => msg.channel.send(`\`\`\`${err.stack || err}\`\`\``));
 };

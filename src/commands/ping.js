@@ -1,4 +1,4 @@
-exports.run = (client, msg) => {
+exports.run = async (client, msg) => {
   msg.delete();
   msg.channel.send("Ping!").then(m => m.edit(`🏓 Pong!\nLatency is **${m.createdTimestamp - msg.createdTimestamp}ms**.\nAPI Latency is **${Math.round(client.ping)}ms**.`));
 };
