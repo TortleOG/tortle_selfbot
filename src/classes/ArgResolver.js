@@ -28,7 +28,7 @@ class ArgResolver extends Resolver {
     const boolean = await super.boolean();
     if (boolean !== null) return boolean;
     if (currentUsage.type === "optional" && !repeat) return null;
-    throw `${currentUsage.possibles[possible].name} must be true or false.`;
+    throw `Invalid argument: ${currentUsage.possibles[possible].name} must be true or false.`;
   }
 
   async int(...args) {
@@ -39,7 +39,7 @@ class ArgResolver extends Resolver {
     arg = await super.integer(arg);
     if (arg === null) {
       if (currentUsage.type === "optional" && !repeat) return null;
-      throw `${currentUsage.possibles[possible].name} must be an integer.`;
+      throw `Invalid argument: ${currentUsage.possibles[possible].name} must be an integer.`;
     }
     return arg;
   }
@@ -52,7 +52,7 @@ class ArgResolver extends Resolver {
     arg = await super.float(arg);
     if (arg === null) {
       if (currentUsage.type === "optional" && !repeat) return null;
-      throw `${currentUsage.possibles[possible].name} must be a valid number.`;
+      throw `Invalid argument: ${currentUsage.possibles[possible].name} must be a valid number.`;
     }
     return arg;
   }
