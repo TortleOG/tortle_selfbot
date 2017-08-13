@@ -1,6 +1,6 @@
 {
   "name": "tortle_selfbot",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "description": "A Discord selfbot created with a custom command handler",
   "main": "src/index.js",
   "scripts": {
