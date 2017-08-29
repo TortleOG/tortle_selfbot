@@ -1,4 +1,6 @@
 # tortle_selfbot
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/TortleOG/tortle_selfbot.svg)](https://greenkeeper.io/)
 A Discord selfbot made with a custom command handler
 
 ## Installation Guide
